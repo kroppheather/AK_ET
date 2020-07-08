@@ -1,23 +1,34 @@
-#starting script to organize data download
-# Install rhdf5 package (only need to run if not already installed)
-#install.packages("BiocManager")
-#BiocManager::install("rhdf5")
-
-# Call the R HDF5 Library
-library(rhdf5)
+#organize and work flux data
+library(dplyr)
+library(lubridate)
 
 
 #home directory
-dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/NEON_eddy-flux"
+dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-test <- list.dirs(dirD)
+flux <- read.csv(paste0(dirD, "/healyFluxes.csv"))
 
-test2 <- list.files(test[2])
+#start a new data frame
+datF <- data.frame(timeStart = flux$timeBgn,
+                    timeEnd = flux$timeEnd,
+                    LH = flux$data.fluxH2o.nsae.flux,
+                    SH = flux$data.fluxTemp.nsae.flux)
+#convert dates
+datF$dates <- ymd_hms(datF$timeStart)
+#convert to local time
+datF$timeE <- with_tz(datF$dates, "US/Alaska")
+#calculate useful date metrics
+datF$yr <- year(datF$timeE)
+datF$doy <- yday(datF$timeE)
+datF$hour <- hour(datF$timeE) + (minute(datF$timeE)/60)
+datF$DD <- datF$doy + (datF$hour/24)
+datF$DY <- ifelse(leap_year(datF$timeE), 
+                    datF$yr + ((datF$doy-1)/366),
+                    datF$yr + ((datF$doy-1)/365))
+datF$month <- month(datF$timeE)
 
-day1 <- test2[2]
+plot(datF$DD[datF$yr == 2018 ], datF$LH[datF$yr == 2018 ],
+    xlim = c(182, 212), type="b", pch=19)
 
-day1data <- H5Fopen(paste0(test[2],"/",day1))
-
-str(day1data$HEAL)
-
-head(day1data$objDesc)
+    plot(datF$DD[datF$yr == 2018 ], datF$SH[datF$yr == 2018 ],
+     type="b", pch=19)
