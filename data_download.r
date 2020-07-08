@@ -11,15 +11,17 @@ options(stringsAsFactors=F)
 
 dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-zipsByProduct(dpID="DP4.00200.001", package="expanded", 
-              site=c("HEAL"), 
-              startdate="2017-01", enddate="2020-05",
-              savepath=dirD, 
-              check.size=F)
+#zipsByProduct(dpID="DP4.00200.001", package="expanded", 
+#              site=c("HEAL"), 
+#              startdate="2017-01", enddate="2020-05",
+#              savepath=dirD, 
+#              check.size=F)
 
 
 flux <- stackEddy(filepath=paste0(dirD,"/filesToStack00200"),
                  level="dp04")
+
+  foot <-   footRaster(filepath=paste0(dirD,"/filesToStack00200"))        
 
 plot(as.Date(flux$HEAL$timeEnd), flux$HEAL$data.fluxH2o.nsae.flux)
 
