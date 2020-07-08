@@ -9,9 +9,9 @@ library(rhdf5)
 library(neonUtilities)
 options(stringsAsFactors=F)
 
-dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/NEON_eddy-flux"
+dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-zipsByProduct(dpID="DP4.00200.001", package="basic", 
+zipsByProduct(dpID="DP4.00200.001", package="expanded", 
               site=c("HEAL"), 
               startdate="2017-01", enddate="2020-05",
               savepath=dirD, 
