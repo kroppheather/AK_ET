@@ -12,40 +12,66 @@ library(raster)
 
 dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-#zipsByProduct(dpID="DP4.00200.001", package="expanded", 
- #             site=c("HEAL"), 
-  #            startdate="2017-01", enddate="2017-12",
-   #           savepath=paste0(dirD,"/2017"), 
-    #          check.size=F)
+###June 2018
 
-#zipsByProduct(dpID="DP4.00200.001", package="expanded", 
-#              site=c("HEAL"), 
-#              startdate="2018-08", enddate="2018-09",
-#              savepath=paste0(dirD,"/summer2018"), 
-#              check.size=F)
+zipsByProduct(dpID="DP4.00200.001", package="expanded", 
+            site=c("HEAL"), 
+             startdate="2018-06", enddate="2018-06",
+              savepath=paste0(dirD,"/06_2018"), 
+              check.size=F)
 
-#zipsByProduct(dpID="DP4.00200.001", package="expanded", 
- #             site=c("HEAL"), 
-  #            startdate="2019-01", enddate="2019-12",
-   #           savepath=paste0(dirD,"/2019"), 
-    #          check.size=F)
+#extract footpring
+foot <-   footRaster(filepath=paste0(dirD,"/06_2018/filesToStack00200"))      
+#save
+writeRaster(foot[[1]],paste0(dirD,"/rasters/summary/06_2018.tif"), format = "GTiff")
 
-##flux <- stackEddy(filepath=paste0(dirD,"/filesToStack00200"),
-#                 level="dp04")
+for(i in 2:dim(foot)[3]){
+  writeRaster(foot[[i]],paste0(dirD,"/rasters/2018/",strsplit(foot[[i]]@data@names,"\\.")[[1]][18],".tif"), format = "GTiff")
 
-  foot <-   footRaster(filepath=paste0(dirD,"/summer2018/filesToStack00200"))        
-str(foot[[1]])
-str(foot[[2]])
-str(foot[[3]])
-foot[[1]]@data@names
+ }
 
-foot[[2]]@data@names
-#plot(as.Date(flux$HEAL$timeEnd), flux$HEAL$data.fluxH2o.nsae.flux)
+ 
 
-#tail(flux$HEAL)
+flux <- stackEddy(filepath=paste0(dirD,"/06_2018/filesToStack00200"),
+                 level="dp04")
 
-#flux$HEAL <- cbind(timeB, flux$HEAL)
-#write.table(flux$HEAL,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/healyFluxes.csv", sep=",", row.names=FALSE)
 
-#write.table(flux$variables,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/healyFluxesVariables.csv", sep=",", row.names=FALSE)
+write.table(flux$HEAL,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/fluxes/data/06_2018.csv", sep=",", row.names=FALSE)
 
+write.table(flux$variables,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/fluxes/variables/06_2018_Variables.csv", sep=",", row.names=FALSE)
+
+rm(list=ls())
+
+#####July 2018 ######
+
+
+dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
+
+
+zipsByProduct(dpID="DP4.00200.001", package="expanded", 
+            site=c("HEAL"), 
+             startdate="2018-07", enddate="2018-07",
+              savepath=paste0(dirD,"/07_2018"), 
+              check.size=F)
+
+#extract footpring
+foot <-   footRaster(filepath=paste0(dirD,"/07_2018/filesToStack00200"))      
+#save
+writeRaster(foot[[1]],paste0(dirD,"/rasters/summary/07_2018.tif"), format = "GTiff")
+
+for(i in 2:dim(foot)[3]){
+  writeRaster(foot[[i]],paste0(dirD,"/rasters/2018/",strsplit(foot[[i]]@data@names,"\\.")[[1]][18],".tif"), format = "GTiff")
+
+ }
+
+ 
+
+flux <- stackEddy(filepath=paste0(dirD,"/07_2018/filesToStack00200"),
+                 level="dp04")
+
+
+write.table(flux$HEAL,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/fluxes/data/07_2018.csv", sep=",", row.names=FALSE)
+
+write.table(flux$variables,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/fluxes/variables/07_2018_Variables.csv", sep=",", row.names=FALSE)
+
+rm(list=ls())
