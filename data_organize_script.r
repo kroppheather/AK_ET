@@ -1,12 +1,15 @@
 #organize and work flux data
 library(dplyr)
 library(lubridate)
+library(REddyProc)
 
 
 #home directory
 dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-flux <- read.csv(paste0(dirD, "/healyFluxes.csv"))
+fluxFile <-list.files(paste0(dirD, "/fluxes/data"))
+
+flux <- read.csv(paste0(dirD, "/fluxes/data"))
 
 #start a new data frame
 datF <- data.frame(timeStart = flux$timeBgn,
