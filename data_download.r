@@ -218,8 +218,33 @@ rm(list=ls())
 
 dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-zipsByProduct(dpID="DP1.00023.001", package="expanded", 
-            site=c("HEAL"), 
-             startdate="2018-01", enddate="2019-12",
-              savepath=paste0(dirD,"/met/rad"), 
-              check.size=F)
+rad <- loadByProduct("DP1.00023.001", site="HEAL", avg=30,
+                    startdate="2018-01", enddate="2019-12",
+                    package="basic", check.size=F)
+
+write.table(rad$SLRNR, paste0(dirD,"/met/rad/net_rad.csv"),sep=",",row.names=FALSE)
+write.table(rad$variables_0023, paste0(dirD,"/met/rad/net_rad_variables.csv"),sep=",",row.names=FALSE)
+
+
+air <- loadByProduct("DP1.00003.001", site="HEAL", avg=30,
+                    startdate="2018-01", enddate="2019-12",
+                    package="basic", check.size=F)
+
+write.table(air$TAAT_30min, paste0(dirD,"/met/temp/air_temp.csv"),sep=",",row.names=FALSE)
+write.table(air$variables_00003, paste0(dirD,"/met/temp/air_temp._variables.csv"),sep=",",row.names=FALSE)
+
+surf <- loadByProduct("DP1.00005.001", site="HEAL", avg=30,
+                    startdate="2018-01", enddate="2019-12",
+                    package="basic", check.size=F)
+
+write.table(surf$IRBT_30_minute, paste0(dirD,"/met/temp/bio_surf_temp.csv"),sep=",",row.names=FALSE)
+write.table(surf$variables_00005, paste0(dirD,"/met/temp/bio_surf_temp_variables.csv"),sep=",",row.names=FALSE)
+
+
+
+precip <- loadByProduct("DP1.00006.001", site="HEAL", avg=30,
+                    startdate="2018-01", enddate="2019-12",
+                    package="basic", check.size=F)
+
+write.table(precip$SECPRE_30min, paste0(dirD,"/met/precip/precip.csv"),sep=",",row.names=FALSE)
+write.table(precip$variables_00006, paste0(dirD,"/met/precip/precip_variables.csv"),sep=",",row.names=FALSE)
