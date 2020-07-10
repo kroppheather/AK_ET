@@ -213,3 +213,13 @@ write.table(flux$HEAL,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/f
 write.table(flux$variables,"/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/fluxes/variables/08_2019_Variables.csv", sep=",", row.names=FALSE)
 
 rm(list=ls())
+
+###download met
+
+dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
+
+zipsByProduct(dpID="DP1.00023.001", package="expanded", 
+            site=c("HEAL"), 
+             startdate="2018-01", enddate="2019-12",
+              savepath=paste0(dirD,"/met/rad"), 
+              check.size=F)
