@@ -7,9 +7,16 @@ library(REddyProc)
 #home directory
 dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
 
-fluxFile <-list.files(paste0(dirD, "/fluxes/data"))
+fluxFile <-list.files(paste0(dirD, "/fluxes/data"), full.names=TRUE)
 
-flux <- read.csv(paste0(dirD, "/fluxes/data"))
+
+flux <- read.csv(fluxFile[1])
+
+for(i in 2:length(fluxFile)){
+  flux <- rbind(flux, read.csv(fluxFile[i]))
+
+}
+
 
 #start a new data frame
 datF <- data.frame(timeStart = flux$timeBgn,
@@ -30,6 +37,10 @@ datF$DY <- ifelse(leap_year(datF$timeE),
                     datF$yr + ((datF$doy-1)/365))
 datF$month <- month(datF$timeE)
 
+#organize
+datF <- datF[order(datF$timeE),]
+
+plot(datF$DY,datF$LH, type="b",pch=19)
 plot(datF$DD[datF$yr == 2018 ], datF$LH[datF$yr == 2018 ],
     xlim = c(182, 212), type="b", pch=19)
 
