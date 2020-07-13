@@ -248,3 +248,11 @@ precip <- loadByProduct("DP1.00006.001", site="HEAL", avg=30,
 
 write.table(precip$SECPRE_30min, paste0(dirD,"/met/precip/precip.csv"),sep=",",row.names=FALSE)
 write.table(precip$variables_00006, paste0(dirD,"/met/precip/precip_variables.csv"),sep=",",row.names=FALSE)
+
+
+rh <- loadByProduct("DP1.00098.001", site="HEAL", avg=30,
+                    startdate="2018-01", enddate="2019-12",
+                    package="basic", check.size=F)
+
+write.table(rh$RH_30min, paste0(dirD,"/met/temp/rel_hum.csv"),sep=",",row.names=FALSE)
+write.table(rh$variables_00098, paste0(dirD,"/met/temp/rel_hum_variables.csv"),sep=",",row.names=FALSE)
