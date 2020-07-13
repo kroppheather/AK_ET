@@ -222,7 +222,7 @@ rad <- loadByProduct("DP1.00023.001", site="HEAL", avg=30,
                     startdate="2018-01", enddate="2019-12",
                     package="basic", check.size=F)
 
-write.table(rad$SLRNR[rad$SLNR$verticalPosition == "040"], paste0(dirD,"/met/rad/net_rad.csv"),sep=",",row.names=FALSE)
+write.table(rad$SLRNR[rad$SLRNR$verticalPosition == "040",], paste0(dirD,"/met/rad/net_rad.csv"),sep=",",row.names=FALSE)
 write.table(rad$variables_0023, paste0(dirD,"/met/rad/net_rad_variables.csv"),sep=",",row.names=FALSE)
 
 

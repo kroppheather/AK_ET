@@ -60,9 +60,9 @@ datF$month <- month(datF$timeE)
 
 #organize
 datF <- datF[order(datF$timeE),]
-###############################
-###filter out extreme values###
-###############################
+
+# set up quantile filter
+
 LHO <- quantile(datF$LH, prob=c(.01,.05,.25,.5,.75,.95,0.99), na.rm=TRUE)
 
 #filter out outliers
