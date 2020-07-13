@@ -41,25 +41,12 @@ for(i in 2:length(fluxFile)){
 
 #start a new data frame
 datF <- data.frame(timeStart = flux$timeBgn,
-                    timeEnd = flux$timeEnd,
                     LH = flux$data.fluxH2o.nsae.flux,
                     SH = flux$data.fluxTemp.nsae.flux)
-#convert dates
-datF$dates <- ymd_hms(datF$timeStart)
-#convert to local time
-datF$timeE <- with_tz(datF$dates, "US/Alaska")
-#calculate useful date metrics
-datF$yr <- year(datF$timeE)
-datF$doy <- yday(datF$timeE)
-datF$hour <- hour(datF$timeE) + (minute(datF$timeE)/60)
-datF$DD <- datF$doy + (datF$hour/24)
-datF$DY <- ifelse(leap_year(datF$timeE), 
-                    datF$yr + ((datF$doy-1)/366),
-                    datF$yr + ((datF$doy-1)/365))
-datF$month <- month(datF$timeE)
 
+datF$timeStartC <- as.character(ymd_hms(datF$timeStart))
 #organize
-datF <- datF[order(datF$timeE),]
+datF <- datF[order(datF$timeStart),]
 
 # set up quantile filter
 
@@ -81,37 +68,16 @@ datNRs <- data.frame(timeStartN= datNR$startDateTime,
                     outSW = datNR$outSWMean,
                     inLW = datNR$inLWMean,
                     outLW = datNR$outLWMean)
-datesN <- ymd_hms(datNRs$timeStartN)
-#convert to local time
-datNRs$timeN <- with_tz(datesN, "US/Alaska")
-#calculate useful date metrics
-datNRs$yr <- year(datNRs$timeN)
-datNRs$doy <- yday(datNRs$timeN)
-datNRs$hour <- hour(datNRs$timeN) + (minute(datNRs$timeN)/60)
-
+#air temp
 datTs <- data.frame(timeStartT = datT$startDateTime,
                     airT = datT$tempTripleMean)
-datesS <- ymd_hms(datTs$timeStartT)
-#convert to local time
-datTs$timeS <- with_tz(datesS, "US/Alaska")
-#calculate useful date metrics
-datTs$yr <- year(datTs$timeS)
-datTs$doy <- yday(datTs$timeS)
-datTs$hour <- hour(datTs$timeS) + (minute(datTs$timeS)/60)
 
 #biological surface temperature
 datBs <- data.frame(timeStartB = datBT$startDateTime,
                     bioTemp = datBT$bioTempMean)
-datesB <- ymd_hms(datBs$timeStartB)
-#convert to local time
-datBs$timeB <- with_tz(datesB, "US/Alaska")
-#calculate useful date metrics
-datBs$yr <- year(datBs$timeB)
-datBs$doy <- yday(datBs$timeB)
-datBs$hour <- hour(datBs$timeB) + (minute(datBs$timeB)/60)
+
 
 #humidity and vpd
-
 
 datRs <- data.frame(timeStartR = datRH$startDateTime,
                     RH = datRH$RHMean,
@@ -119,34 +85,27 @@ datRs <- data.frame(timeStartR = datRH$startDateTime,
                     e.sat = 0.611*exp((17.502*datRH$tempRHMean)/(datRH$tempRHMean+240.97)))
 datRs$D <- datRs$e.sat - ((datRs$RH/100)*datRs$e.sat)
 
-datesR <- ymd_hms(datRs$timeStartR)
+#join met data with fluxes
+
+
+neonHt1 <- left_join(datTs,datNRs, by=c("timeStartT" = "timeStartN"))
+neonHt2 <- left_join(neonHt1,datBs, by=c("timeStartT" = "timeStartB"))
+neonHt3 <- left_join(neonHt2,datRs, by=c("timeStartT" = "timeStartR"))
+
+neonH <- left_join(neonHt3,datF, by=c("timeStartT" = "timeStartC"))
+
+
+
+neonH$formatD <- as.POSIXct(neonH$timeStartT, 
+                    format="%Y-%m-%d %H:%M:%S", 
+                    tz="GMT")
+
 #convert to local time
-datRs$timeR <- with_tz(datesR, "US/Alaska")
+neonH$timeLocal <- with_tz(neonH$formatD, "US/Alaska")                    
 #calculate useful date metrics
-datRs$yr <- year(datRs$timeR)
+neonH$yr <- year(datRs$timeR)
 datRs$doy <- yday(datRs$timeR)
 datRs$hour <- hour(datRs$timeR) + (minute(datRs$timeR)/60)
-
-#join met data with fluxes
-#air temp is complete
-datTs$decDay <- datTs$doy + (datTs$hour/24)
-datTs$decYear <- datTs$yr + (datTs$decDay/365)
-
-datNRs$decDay <- datNRs$doy + (datNRs$hour/24)
-datNRs$decYear <- datNRs$yr + (datNRs$decDay/365)
-
-datT2 <- data.frame(time= datTs$timeS,
-                    airT = datTs$airT)
- datNR2 <- data.frame(time = datNRs$timeN,
-                      inSW = datNRs$inSW)                   
-test <- left_join(datT2, datNR2, by=c("time"))
-test2 <- merge(datT2, datNR2, by=c("year","doy","hour"))
-neonHt1 <- merge(datTs,datNRs, by=c("decYear"))
-
-
-neonHt2 <- left_join(neonHt1,datF, by=c("yr","doy","hour"))
-neonHt3 <- left_join(neonHt2,datBs, by=c("yr","doy","hour"))
-neonH <- left_join(neonHt3,datRs, by=c("yr","doy","hour"))
 #calculate ET in mmol m-2 s-1
 neonH$ET <- fCalcETfromLE(neonH$LH, neonH$airT)
 

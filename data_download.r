@@ -237,7 +237,7 @@ surf <- loadByProduct("DP1.00005.001", site="HEAL", avg=30,
                     startdate="2018-01", enddate="2019-12",
                     package="basic", check.size=F)
 
-write.table(surf$IRBT_30_minute, paste0(dirD,"/met/temp/bio_surf_temp.csv"),sep=",",row.names=FALSE)
+write.table(surf$IRBT_30_minute[surf$IRBT_30_minute$horizontalPosition == "000" & surf$IRBT_30_minute$verticalPosition == "020",], paste0(dirD,"/met/temp/bio_surf_temp.csv"),sep=",",row.names=FALSE)
 write.table(surf$variables_00005, paste0(dirD,"/met/temp/bio_surf_temp_variables.csv"),sep=",",row.names=FALSE)
 
 
@@ -254,5 +254,5 @@ rh <- loadByProduct("DP1.00098.001", site="HEAL", avg=30,
                     startdate="2018-01", enddate="2019-12",
                     package="basic", check.size=F)
 
-write.table(rh$RH_30min, paste0(dirD,"/met/temp/rel_hum.csv"),sep=",",row.names=FALSE)
+write.table(rh$RH_30min[rh$RH_30min$verticalPosition == "040",], paste0(dirD,"/met/temp/rel_hum.csv"),sep=",",row.names=FALSE)
 write.table(rh$variables_00098, paste0(dirD,"/met/temp/rel_hum_variables.csv"),sep=",",row.names=FALSE)
