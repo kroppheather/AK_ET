@@ -47,13 +47,33 @@ LHO <- quantile(datF$LH, prob=c(.01,.05,.25,.5,.75,.95,0.99), na.rm=TRUE)
 #filter out outliers
 datF$LH[datF$LH <= LHO[1] | datF$LH >= LHO[7]] <- NA
 
-#read in other
+#read in other met data
 
+datNR <- read.csv(paste0(dirD,"/met/rad/net_rad.csv"))
+datT <- read.csv(paste0(dirD,"/met/temp/air_temp.csv"))
+datBT <- read.csv(paste0(dirD,"/met/temp/bio_surf_temp.csv"))
+
+#organize dates
+#convert dates
+datNRs <- data.frame(timeStartN= datNR$startDateTime,
+                    inSW = datNR$inSWMean,
+                    outSW = datNR$outSWMean,
+                    inLW = datNR$inLWMean,
+                    outLW = datNR$outLWMean)
+datesN <- ymd_hms(datNRs$timeStartN)
+#convert to local time
+datNRs$timeN <- with_tz(datesN, "US/Alaska")
+#calculate useful date metrics
+datNRs$yr <- year(datNRs$timeN)
+datNRs$doy <- yday(datNRs$timeN)
+datNRs$hour <- hour(datNRs$timeN) + (minute(datNRs$timeN)/60)
+
+datT <-
 
 #look at data
 plot(datF$DY,datF$LH, type="b",pch=19)
 
-
+head(datesN)
     plot(datF$DD[datF$yr == 2018 ], datF$LH[datF$yr == 2018 ],
      type="b", xlim=c(180,220), pch=19)
 
