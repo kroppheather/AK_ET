@@ -85,12 +85,15 @@ datRs <- data.frame(timeStartR = datRH$startDateTime,
                     e.sat = 0.611*exp((17.502*datRH$tempRHMean)/(datRH$tempRHMean+240.97)))
 datRs$D <- datRs$e.sat - ((datRs$RH/100)*datRs$e.sat)
 
+
+
 #join met data with fluxes
 
 
 neonHt1 <- left_join(datTs,datNRs, by=c("timeStartT" = "timeStartN"))
 neonHt2 <- left_join(neonHt1,datBs, by=c("timeStartT" = "timeStartB"))
 neonHt3 <- left_join(neonHt2,datRs, by=c("timeStartT" = "timeStartR"))
+
 
 neonH <- left_join(neonHt3,datF, by=c("timeStartT" = "timeStartC"))
 
