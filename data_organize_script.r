@@ -61,8 +61,8 @@ datNR <- read.csv(paste0(dirD,"/met/rad/net_rad.csv"))
 datT <- read.csv(paste0(dirD,"/met/temp/air_temp.csv"))
 datBT <- read.csv(paste0(dirD,"/met/temp/bio_surf_temp.csv"))
 datRH <- read.csv(paste0(dirD,"/met/temp/rel_hum.csv"))
+datP <- read.csv(paste0(dirD,"/met/precip/precip.csv"))
 #organize dates
-#convert dates
 datNRs <- data.frame(timeStartN= datNR$startDateTime,
                     inSW = datNR$inSWMean,
                     outSW = datNR$outSWMean,
@@ -103,13 +103,11 @@ neonH$formatD <- as.POSIXct(neonH$timeStartT,
 #convert to local time
 neonH$timeLocal <- with_tz(neonH$formatD, "US/Alaska")                    
 #calculate useful date metrics
-neonH$yr <- year(datRs$timeR)
-datRs$doy <- yday(datRs$timeR)
-datRs$hour <- hour(datRs$timeR) + (minute(datRs$timeR)/60)
+neonH$yr <- year(neonH$timeLocal)
+neonH$doy <- yday(neonH$timeLocal)
+neonH$hour <- hour(neonH$timeLocal) + (minute(neonH$timeLocal)/60)
 #calculate ET in mmol m-2 s-1
 neonH$ET <- fCalcETfromLE(neonH$LH, neonH$airT)
-
-test <- unique(data.frame(doy=neonH$doy, yr=neonH$yr, hour=neonH$hour))
 
 neonH$decDay <- neonH$doy + (neonH$hour/24)
 neonH$decYear <- neonH$yr + (neonH$decDay/365)
