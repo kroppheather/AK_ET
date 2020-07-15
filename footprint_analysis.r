@@ -13,6 +13,11 @@ f.test <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/raster
 plotRGB(rgbH)
 plot(f.test, add=TRUE, alpha=0.5)
 
+
+
+thermal <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_07_c1_georeferenced.tif")
+
+
 plotRGB(rgbH, ext=c(390600,391455,708400,7088000)))
 plotRGB(rgbH2, add=TRUE)
 plotRGB(rgbH3, add=TRUE)
@@ -21,3 +26,5 @@ plot(f.test, add=TRUE, alpha=0.5)
 plotRGB(rgbH3)
 
 rgbH3@extent
+plotRGB(rgbH2)
+plotRGB(thermal, add=TRUE)
