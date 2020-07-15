@@ -16,9 +16,11 @@ plot(f.test, add=TRUE, alpha=0.5)
 
 
 thermal <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_07_c1_georeferenced.tif")
+#2017 drone data
+t1 <- stack("/Users/hkropp/Google Drive/research/Healy_ET/HK_healy_drone/HLY_F007R.tif")
 
 
-plotRGB(rgbH, ext=c(390600,391455,708400,7088000)))
+plotRGB(rgbH, ext=c(390600,391455,708400,7088000))
 plotRGB(rgbH2, add=TRUE)
 plotRGB(rgbH3, add=TRUE)
 plot(f.test, add=TRUE, alpha=0.5)
@@ -28,3 +30,4 @@ plotRGB(rgbH3)
 rgbH3@extent
 plotRGB(rgbH2)
 plotRGB(thermal, add=TRUE)
+
