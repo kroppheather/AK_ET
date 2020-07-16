@@ -1,5 +1,6 @@
 library(raster)
 
+
 rgbH <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/AK_uas_mapping/Neon_map.tif")
 rgbH2 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/maps/healy_7_07_18.tif")
 rgbH3 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/maps/healy_flight_1.tif")
@@ -33,17 +34,15 @@ plotRGB(thermal, add=TRUE)
 
 #read in sentinal data
 
-Dirs <- c(
-    "/Users/hkropp/Google Drive/research/Healy_ET/S2A/S2A_MSIL2A_20190819T214531_N0213_R129_T06VUR_20190820T020456.SAFE/GRANULE/L2A_T06VUR_A021719_20190819T214532/IMG_DATA/R10m",
-    "/Users/hkropp/Google Drive/research/Healy_ET/S2A/S2A_MSIL2A_20190819T214531_N0213_R129_T05WPM_20190820T020456.SAFE/GRANULE/L2A_T05WPM_A021719_20190819T214532/IMG_DATA/R10m",
-    "/Users/hkropp/Google Drive/research/Healy_ET/S2A/S2B_MSIL2A_20190705T214539_N0212_R129_T05VPL_20190706T000242.SAFE/GRANULE/L2A_T05VPL_A012167_20190705T214538/IMG_DATA/R10m",
-    "/Users/hkropp/Google Drive/research/Healy_ET/S2A/S2B_MSIL2A_20190705T214539_N0212_R129_T05WPM_20190706T000242.SAFE/GRANULE/L2A_T05WPM_A012167_20190705T214538/IMG_DATA/R10m")
 
-FilesR <- list()
-for(i in 1:4){
+S42B02 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B02.tif")
 
-    FilesR[[i]]<- list.files(Dirs[i])
-}
+S42B03 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B03.tif")
 
-#read in 
-S2AB1 <- raster(paste0(Dirs[1],"/",FilesR[[1]][2]))
+S42B04 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B04.tif")
+
+sSt <- stack(S42B04,S42B03,S42B04)
+
+#write rasters to folder for QGIS
+#writeRaster(sSt, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Sent.tif",type="GTiff")
+#writeRaster(rgbH, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healy_drone.tif",type="GTiff")
