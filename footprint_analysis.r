@@ -41,8 +41,16 @@ S42B03 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/2019
 
 S42B04 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B04.tif")
 
-sSt <- stack(S42B04,S42B03,S42B04)
+sSt <- stack(S42B04,S42B03,S42B02)
 
 #write rasters to folder for QGIS
-#writeRaster(sSt, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Sent.tif",type="GTiff")
+#writeRaster(sSt, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Sent42.tif",type="GTiff")
 #writeRaster(rgbH, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healy_drone.tif",type="GTiff")
+#writeRaster(f.test, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1.tif",type="GTiff")
+
+f.test2 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T123000Z.tif")
+writeRaster(f.test2, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1_30.tif",type="GTiff")
+
+f.test3 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180705T123000Z.tif")
+writeRaster(f.test3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint3.tif",type="GTiff")
+
