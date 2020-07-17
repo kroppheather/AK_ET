@@ -49,8 +49,24 @@ sSt <- stack(S42B04,S42B03,S42B02)
 #writeRaster(f.test, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1.tif",type="GTiff")
 
 f.test2 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T123000Z.tif")
-writeRaster(f.test2, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1_30.tif",type="GTiff")
+#writeRaster(f.test2, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1_30.tif",type="GTiff")
 
 f.test3 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180705T123000Z.tif")
-writeRaster(f.test3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint3.tif",type="GTiff")
+#writeRaster(f.test3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint3.tif",type="GTiff")
 
+#other thermal flight
+
+
+
+thermal2 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_04_ortho.tif")
+
+str(thermal2)
+
+thermal3 <- thermal2
+thermal3@extent <- rgbH3@extent
+
+
+writeRaster(thermal3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/thermal_7_04p2.tif",type="GTiff")
+
+
+writeRaster(rgbH3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif",type="GTiff")
