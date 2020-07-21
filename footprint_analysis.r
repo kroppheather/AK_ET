@@ -66,7 +66,17 @@ thermal3 <- thermal2
 thermal3@extent <- rgbH3@extent
 
 
-writeRaster(thermal3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/thermal_7_04p2.tif",type="GTiff")
+#writeRaster(thermal3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/thermal_7_04p2.tif",type="GTiff")
 
 
-writeRaster(rgbH3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif",type="GTiff")
+#writeRaster(rgbH3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif",type="GTiff")
+
+chm <- raster("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/neon_chm_mos.tif")
+plot(chm)
+hist(getValues(chm), breaks=c(0,0.1,0.5,1,1.5,2,3,10,20),
+     ylim=c(0,0.1))
+plotRGB(rgbH)
+plot(chm, add=TRUE,
+     alpha=0.5)
+
+
