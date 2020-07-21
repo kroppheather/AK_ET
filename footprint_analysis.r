@@ -1,4 +1,5 @@
 library(raster)
+library(rgdal)
 
 
 rgbH <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/AK_uas_mapping/Neon_map.tif")
@@ -9,11 +10,34 @@ str(rgbH)
 
 #read in test footprint
 f.test <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T120000Z.tif")
-
+f.test4 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T113000Z.tif")
 
 plotRGB(rgbH)
 plot(f.test, add=TRUE, alpha=0.5)
 
+vege <- readOGR("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/vege_tall.shp")
+vegeP <- spTransform(vege,f.test@crs)
+plot(vegeP,col="black", axes=TRUE)
+vegeR <- rasterize(vegeP,f.test, field=1)
+
+plot(vegeR)
+plot(f.test, add=TRUE, alpha=0.5)
+range(getValues(vegeR))
+f.por <- f.test * vegeR
+
+plot(f.test4)
+f.por4 <- f.test4*vegeR
+sum(getValues(f.por4),na.rm = TRUE)
+
+plot(f.test3)
+f.por3 <- f.test3*vegeR
+sum(getValues(f.por3),na.rm = TRUE)
+plot(f.por3)
+
+
+plot(f.por)
+sum(getValues(f.por),na.rm=TRUE)
+sum()
 
 
 thermal <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_07_c1_georeferenced.tif")
