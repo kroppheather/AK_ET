@@ -1,17 +1,26 @@
-#reads in neonH
+##################################
+##### neon data              #####
+##################################
 source("/Users/hkropp/Documents/GitHub/AK_ET/data_organize_script.r")
-
+##################################
+##### Set directories        #####
+##################################
 #set plot dir
 plotDir <- "/Users/hkropp/Google Drive/research/Healy_ET/figures"
+
+##################################
+##### other data             #####
+##################################
+#look at leaf temp
+leafT <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/thermal_canopy/healy/leaf_temp/subset_out/leaf_temp_ir.csv")
+leafT$decDay <- leafT$doy + (leafT$start_time/24)
 
 #add in net radiation
 neonH$netR <- (neonH$inSW-neonH$outSW) + (neonH$inLW - neonH$outSW)
 #calculate difference in temp
 neonH$tempDiff <- neonH$bioTemp - neonH$airT
 
-#look at leaf temp
-leafT <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/thermal_canopy/healy/leaf_temp/subset_out/leaf_temp_ir.csv")
-leafT$decDay <- leafT$doy + (leafT$start_time/24)
+
 
 #calculate averages of plant leaf temperatures
 
