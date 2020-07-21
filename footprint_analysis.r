@@ -100,3 +100,14 @@ for(i in 2: length(rast19)){
   footInfo <- rbind(footInfo,footTemp)
 }
 
+#check what the footprint looks like when no tall vegetation
+footFc1 <- raster(paste0(diR19,"/",rast19[4368]))
+plot(footFc1)
+footFc2 <- raster(paste0(diR19,"/",rast19[1]))
+plot(footFc2)
+footFc3 <- raster(paste0(diR19,"/",rast19[6]))
+plot(footFc3)
+
+#write table
+
+#write.table(footInfo, paste0(diRout,"/vege_2019.csv"),sep=",", row.names = FALSE)
