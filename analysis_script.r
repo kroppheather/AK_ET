@@ -2,6 +2,12 @@
 ##### neon data              #####
 ##################################
 source("/Users/hkropp/Documents/GitHub/AK_ET/data_organize_script.r")
+
+##################################
+##### additional libraries   #####
+##################################
+library(stringr)
+
 ##################################
 ##### Set directories        #####
 ##################################
@@ -14,13 +20,66 @@ plotDir <- "/Users/hkropp/Google Drive/research/Healy_ET/figures"
 #look at leaf temp
 leafT <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/thermal_canopy/healy/leaf_temp/subset_out/leaf_temp_ir.csv")
 leafT$decDay <- leafT$doy + (leafT$start_time/24)
+#vegetation footprint data
+vege18 <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/footprint/vege_2018.csv")
+vege19 <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/footprint/vege_2018.csv")
 
+#organize dates
+#2018
+vege18$dates <- paste0(vege18$year,"-", 
+                       str_pad(vege18$month, 2, pad = "0"),"-",
+                       str_pad(vege18$day, 2, pad = "0")," ",
+                       str_pad(vege18$hr, 2, pad = "0"),":",
+                       str_pad(vege18$min, 2, pad = "0"))
+formatD18 <- as.POSIXct(vege18$dates, 
+                            format="%Y-%m-%d %H:%M", 
+                            tz="GMT")
+
+#convert to local time
+vege18$timeLocalV <- with_tz(formatD18, "US/Alaska")  
+#calculate useful date metrics
+vege18$yr <- year(vege18$timeLocal)
+vege18$doy <- yday(vege18$timeLocal)
+vege18$hour <- hour(vege18$timeLocal) + (minute(vege18$timeLocal)/60)
+
+
+#2019
+vege19$dates <- paste0(vege19$year,"-", 
+                       str_pad(vege19$month, 2, pad = "0"),"-",
+                       str_pad(vege19$day, 2, pad = "0")," ",
+                       str_pad(vege19$hr, 2, pad = "0"),":",
+                       str_pad(vege19$min, 2, pad = "0"))
+formatD19 <- as.POSIXct(vege19$dates, 
+                             format="%Y-%m-%d %H:%M", 
+                             tz="GMT")
+
+#convert to local time
+vege19$timeLocalV <- with_tz(formatD19, "US/Alaska")  
+#calculate useful date metrics
+vege19$yr <- year(vege19$timeLocal)
+vege19$doy <- yday(vege19$timeLocal)
+vege19$hour <- hour(vege19$timeLocal) + (minute(vege19$timeLocal)/60)
+
+
+
+#combine vegetation
+vegeP <- rbind(vege18,vege19)
+vegePsub <- data.frame(yr = vegeP$yr,
+                       doy = vegeP$doy,
+                       hour= vegeP$hour,
+                       tallC = vegeP$tallC)
+
+##################################
+##### data calculations      #####
+##################################
 #add in net radiation
 neonH$netR <- (neonH$inSW-neonH$outSW) + (neonH$inLW - neonH$outSW)
 #calculate difference in temp
 neonH$tempDiff <- neonH$bioTemp - neonH$airT
 
-
+#add in vegetation data
+neonHt2 <-  inner_join(neonH, vegePsub, by=c("yr","doy","hour"))
+plot(neonHt2$tallC, neonHt2$ET)
 
 #calculate averages of plant leaf temperatures
 
