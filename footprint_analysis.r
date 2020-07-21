@@ -1,106 +1,58 @@
 library(raster)
 library(rgdal)
 
-
+#set footprint directory
+#start with 2018 only
+diR18 <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018"
+#rgb for reference
 rgbH <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/AK_uas_mapping/Neon_map.tif")
-rgbH2 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/maps/healy_7_07_18.tif")
-rgbH3 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/maps/healy_flight_1.tif")
-
-str(rgbH)
-
-#read in test footprint
-f.test <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T120000Z.tif")
-f.test4 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T113000Z.tif")
-
-plotRGB(rgbH)
-plot(f.test, add=TRUE, alpha=0.5)
-
+#get file names
+rast18 <- list.files(diR18)
+#approximate vegetation cover
 vege <- readOGR("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/vege_tall.shp")
-vegeP <- spTransform(vege,f.test@crs)
-plot(vegeP,col="black", axes=TRUE)
-vegeR <- rasterize(vegeP,f.test, field=1)
-
-plot(vegeR)
-plot(f.test, add=TRUE, alpha=0.5)
-range(getValues(vegeR))
-f.por <- f.test * vegeR
-
-plot(f.test4)
-f.por4 <- f.test4*vegeR
-sum(getValues(f.por4),na.rm = TRUE)
-
-plot(f.test3)
-f.por3 <- f.test3*vegeR
-sum(getValues(f.por3),na.rm = TRUE)
-plot(f.por3)
-
-
-plot(f.por)
-sum(getValues(f.por),na.rm=TRUE)
-sum()
-
-
-thermal <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_07_c1_georeferenced.tif")
 
 
 
-plotRGB(rgbH, ext=c(390600,391455,708400,7088000))
-plotRGB(rgbH2, add=TRUE)
-plotRGB(rgbH3, add=TRUE)
-plot(f.test, add=TRUE, alpha=0.5)
+#initiate variables
+footF <- raster(paste0(diR18,"/",rast18[1]))
+footInfo <- data.frame(year = as.numeric(substr(rast18[1],1,4)),
+                       month = as.numeric(substr(rast18[1],5,6)),
+                       day = as.numeric(substr(rast18[1],7,8)),
+                       hr = as.numeric(substr(rast18[1],10,11)),
+                       min = as.numeric(substr(rast18[1],12,13)),
+                       zone = "UTC")
+#get vegetation as raster
+vegeP <- spTransform(vege,footF@crs)
+vegeR <- rasterize(vegeP,footF, field=1)
 
-plotRGB(rgbH3)
+#raster math
+vegeF <- footF * vegeR
 
-rgbH3@extent
-plotRGB(rgbH2)
-plotRGB(thermal, add=TRUE)
-
-
-#read in sentinal data
-
-
-S42B02 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B02.tif")
-
-S42B03 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B03.tif")
-
-S42B04 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/S2A/export42/20190705_42_B04.tif")
-
-sSt <- stack(S42B04,S42B03,S42B02)
-
-#write rasters to folder for QGIS
-#writeRaster(sSt, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Sent42.tif",type="GTiff")
-#writeRaster(rgbH, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healy_drone.tif",type="GTiff")
-#writeRaster(f.test, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1.tif",type="GTiff")
-
-f.test2 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180704T123000Z.tif")
-#writeRaster(f.test2, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint1_30.tif",type="GTiff")
-
-f.test3 <- raster("/Users/hkropp/Google Drive/research/Healy_ET/healy_flux/rasters/2018/20180705T123000Z.tif")
-#writeRaster(f.test3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/footprint3.tif",type="GTiff")
+#get percent cover tall vegetation
+footInfo$tallC <- sum(getValues(vegeF), na.rm=TRUE)
+footTemp <- data.frame()
+for(i in 2: length(rast18)){
+  footF <- raster(paste0(diR18,"/",rast18[i]))
+  footTemp<- data.frame(year = as.numeric(substr(rast18[i],1,4)),
+                         month = as.numeric(substr(rast18[i],5,6)),
+                         day = as.numeric(substr(rast18[i],7,8)),
+                         hr = as.numeric(substr(rast18[i],10,11)),
+                         min = as.numeric(substr(rast18[i],12,13)),
+                         zone = "UTC")
+  #get vegetation as raster
+  vegeR <- rasterize(vegeP,footF, field=1)
+  
+  #raster math
+  vegeF <- footF * vegeR
+  
+  #get percent cover tall vegetation
+  footTemp$tallC <- sum(getValues(vegeF), na.rm=TRUE)
+  footInfo <- rbind(footInfo,footTemp)
+}
 
 #other thermal flight
 
 
 
-thermal2 <- brick("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/flir_orthomosaic/7_04_ortho.tif")
-
-str(thermal2)
-
-thermal3 <- thermal2
-thermal3@extent <- rgbH3@extent
-
-
-#writeRaster(thermal3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/thermal_7_04p2.tif",type="GTiff")
-
-
-#writeRaster(rgbH3, "/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif",type="GTiff")
-
-chm <- raster("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/neon_chm_mos.tif")
-plot(chm)
-hist(getValues(chm), breaks=c(0,0.1,0.5,1,1.5,2,3,10,20),
-     ylim=c(0,0.1))
-plotRGB(rgbH)
-plot(chm, add=TRUE,
-     alpha=0.5)
 
 
