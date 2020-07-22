@@ -17,8 +17,9 @@ rast19 <- list.files(diR19)
 #approximate vegetation cover
 vege <- readOGR("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/vege_tall.shp")
 
-
-
+#planet data
+plan <- stack("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/planet_footprint.tif")
+plotRGB(plan, r=4,g=3,b=2, scale=9000)
 #initiate variables
 footF <- raster(paste0(diR18,"/",rast18[1]))
 footInfo <- data.frame(year = as.numeric(substr(rast18[1],1,4)),
@@ -111,3 +112,8 @@ plot(footFc3)
 #write table
 
 #write.table(footInfo, paste0(diRout,"/vege_2019.csv"),sep=",", row.names = FALSE)
+
+
+###### look at ndvi ###########
+
+ndvi <- plan[[4]]
