@@ -1,0 +1,2 @@
+#run files copied into project folder in docker
+docker run -ti --rm -v /Users/hkropp/datasets:/datasets opendronemap/odm --project-path /datasets/Projects7_04/images
