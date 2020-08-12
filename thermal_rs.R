@@ -9,6 +9,7 @@ plotDir <- "/Users/hkropp/Google Drive/research/Healy_ET/figures"
 inDir <- "/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/odm_ortho/07_04/"
 thermal <- raster("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/odm_ortho/07_04/georefT_07_04.tif")
 plot(thermal)
+rgbT <- brick("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif")
 
 #read in shapefilse
 shrubs <- readOGR(paste0(inDir,"shrubs.shp"))
@@ -177,8 +178,31 @@ cols <- c(
   rgb(0.92,0.34,0.34),
   rgb(0.92,0.74,0.8))
 
-mean(getValues(thermalFc),na.rm=TRUE)
-  plot(thermalFc, 
-       col=cols, breaks=breaks,)
+#crop rgb to same extent
+rgbC <- crop(rgbT,c(390625,390725,7085200,7085280))
+
+wd <- 5
+wd2 <- 2
+hd <- 5
+png(paste0(plotDir,"/RS_maps.png"),
+    width = 20, height = 11, units = "cm", res=200 )
+layout(matrix(seq(1,2,3), ncol=3, byrow = TRUE),
+       width=c(lcm(wd),lcm(wd), lcm(wd2)),
+       height=lcm(hd))
+plotRGB(rgbC)
+par(mai=c(0,0,0,0))
+plot(thermalFc, 
+       col=cols, breaks=breaks, axes=FALSE,legend=FALSE, box=FALSE)
+
+par(mai=c(0,0,0,0))
+plot(c(0,0.5),c(0,0.5),  type="n", ylim=c(0,12),xlim=c(0,1), xaxs="i",yaxs="i",
+     xlab=" ", ylab=" ",axes=FALSE)
+for(i in 1:12){
+  polygon(c(0,0,1,1),
+          c(i-1,i,i,i-1),
+          col=cols[i], border=NA)
   
+}
+
+dev.off()  
   
