@@ -34,18 +34,24 @@ lichenR <- rasterize(lichensp,thermal, field = 1)
 shortShrubR <- rasterize(shortShrubsp,thermal, field = 1)
 plot(shrubsR)
 
+#all na got converted to zeros 
+thermalF <- setValues(thermal,
+                      ifelse(getValues(thermal) < 10 ,
+                             NA,
+                             getValues(thermal)))
+
 tempRS <- data.frame(temp = c(
-                         zonal(thermal,shrubsR)[,2],
-                         zonal(thermal,treesR)[,2],
-                          zonal(thermal,shadowR)[,2],
-                          zonal(thermal,lichenR)[,2],
-                         zonal(thermal,shortShrubR)[,2]),
+                         zonal(thermalF,shrubsR)[,2],
+                         zonal(thermalF,treesR)[,2],
+                          zonal(thermalF,shadowR)[,2],
+                          zonal(thermalF,lichenR)[,2],
+                         zonal(thermalF,shortShrubR)[,2]),
                      tempSD = c(
-                       zonal(thermal,shrubsR,"sd")[,2],
-                       zonal(thermal,treesR,"sd")[,2],
-                       zonal(thermal,shadowR,"sd")[,2],
-                       zonal(thermal,lichenR,"sd")[,2],
-                       zonal(thermal,shortShrubR,"sd")[,2]),
+                       zonal(thermalF,shrubsR,"sd")[,2],
+                       zonal(thermalF,treesR,"sd")[,2],
+                       zonal(thermalF,shadowR,"sd")[,2],
+                       zonal(thermalF,lichenR,"sd")[,2],
+                       zonal(thermalF,shortShrubR,"sd")[,2]),
                      type = c("tall shrub", "spruce","shadow","lichen","short shrub"))
 
 
@@ -109,8 +115,9 @@ plotT <- data.frame(name = c(tempRS$type[1],
                              "grey75",
                              "peachpuff4"))
 
-
-
+#crop to focus on smaller measurement area
+thermalFc <- crop(thermalF,c(390625,390725,7085200,7085280))
+plot(thermalFc)
 
 
 
@@ -130,7 +137,9 @@ png(paste0(plotDir,"/RS_temp_comp.png"),
 
   axis(2, seq(0,30, by=5), las=2)
   axis(1, c(-10,seq(0,20, by=4),100))
-  
+  mtext(expression(paste("Surface temperature (",degree,"C)")),
+                line=2.5, side=2)
+  mtext("Hour", line=2.5,side=1)
   plot(c(0,1),c(0,1), type = "n", xlim = c(0,10),
        ylim = c(0, 33), axes = FALSE, xlab = " ", 
        ylab =" ", yaxs = "i", xaxs = "i")
@@ -143,16 +152,33 @@ png(paste0(plotDir,"/RS_temp_comp.png"),
   axis(4, seq(0,30, by=5), las=2)
   axis(1, c(seq(1,8),10), c(plotT$name, " "),las=2)
   mtext("July 04, 2018", side=3, cex=2, outer=TRUE, line=-5)
+  mtext(expression(paste("Canopy temperature (",degree,"C)")),
+        side=4,line=2.5)
 dev.off()
 
-hist(getValues(thermal))
 
-thermalF <- setValues(thermal,
-                      ifelse(getValues(thermal) < 10 ,
-                             NA,
-                             getValues(thermal)))
+library(BAMMtools)
 
-  plot(thermalF, ext=c(390625,390725,7085200,7085280),
-       col=rev(heat.colors(255)))
+
+getJenksBreaks(getValues(thermalFc), 9)
+range(getValues(thermalFc), na.rm=TRUE)
+breaks <- c(17,19, 20, 21,22,23,24, 25,26,28,31, 33,45)
+cols <- c(
+  rgb(0,0.34,0.50),
+  rgb(0.02,0.47,0.51),
+  rgb(0.54,0.72,0.82),
+  rgb(0.62,0.75,0.53),
+  rgb(0.31,0.73,0.45),
+  rgb(0.87,0.83,0.31),
+  rgb(0.99,0.82,0.02),
+  rgb(0.99,0.69,0.09),
+  rgb(0.96,0.52,.31),
+  rgb(0.94,0.38,0.52),
+  rgb(0.92,0.34,0.34),
+  rgb(0.92,0.74,0.8))
+
+mean(getValues(thermalFc),na.rm=TRUE)
+  plot(thermalFc, 
+       col=cols, breaks=breaks,)
   
   
