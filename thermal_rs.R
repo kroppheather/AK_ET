@@ -181,21 +181,17 @@ cols <- c(
 #crop rgb to same extent
 rgbC <- crop(rgbT,c(390625,390725,7085200,7085280))
 
-wd <- 5
-wd2 <- 2
-hd <- 5
+
 png(paste0(plotDir,"/RS_maps.png"),
-    width = 20, height = 11, units = "cm", res=200 )
-layout(matrix(seq(1,2,3), ncol=3, byrow = TRUE),
-       width=c(lcm(wd),lcm(wd), lcm(wd2)),
-       height=lcm(hd))
-plotRGB(rgbC)
-par(mai=c(0,0,0,0))
+    width = 20, height = 10, units = "cm", res=200 )
+par(mfrow=c(1,2))
+
+
 plot(thermalFc, 
        col=cols, breaks=breaks, axes=FALSE,legend=FALSE, box=FALSE)
 
 par(mai=c(0,0,0,0))
-plot(c(0,0.5),c(0,0.5),  type="n", ylim=c(0,12),xlim=c(0,1), xaxs="i",yaxs="i",
+plot(c(0,0.5),c(0,0.5),  type="n", ylim=c(-10,22),xlim=c(0,10), xaxs="i",yaxs="i",
      xlab=" ", ylab=" ",axes=FALSE)
 for(i in 1:12){
   polygon(c(0,0,1,1),
@@ -203,6 +199,22 @@ for(i in 1:12){
           col=cols[i], border=NA)
   
 }
+axis(4, seq(0,12), breaks, las=2,line=-17.5, cex.axis=0.75)
+mtext(expression(paste("Temperature (",degree,"C)")), side=4, line=-15)
 
-dev.off()  
-  
+dev.off() 
+
+png(paste0(plotDir,"/drone_rgb_maps.png"),
+    width = 10, height = 10, units = "cm", res=200 )
+plotRGB(rgbC)
+
+dev.off()
+
+
+png(paste0(plotDir,"/drone_overlay_maps.png"),
+    width = 10, height = 10, units = "cm", res=200 )
+plotRGB(rgbC)
+plot(thermalFc,col=cols, breaks=breaks, alpha=0.4, add=TRUE, legend=FALSE)
+
+dev.off()
+
