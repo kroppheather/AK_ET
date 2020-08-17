@@ -272,3 +272,6 @@ dev.off()
 
   points(leafA$decDay,leafA$averageT,
   col="darkgreen",  pch=19)  
+  
+  plot(neonH$ET,neonH$bioTemp, ylim=c(0,30), ylab = "surface temperature (C)",
+       xlab = "Evapotranspiration (mmol m-2 s-1)")
