@@ -4,12 +4,12 @@ library(raster)
 library(rgdal)
 
 #set plot dir
-plotDir <- "/Users/hkropp/Google Drive/research/Healy_ET/figures"
+plotDir <- "/Users/hkropp/Google Drive/research/projects/Healy_ET/figures"
 
-inDir <- "/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/odm_ortho/07_04/"
-thermal <- raster("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/odm_ortho/07_04/georefT_07_04.tif")
+inDir <- "/Users/hkropp/Google Drive/research/projects/Healy_ET/alaska_2018/odm_ortho/07_04/"
+thermal <- raster("/Users/hkropp/Google Drive/research/projects/Healy_ET/alaska_2018/odm_ortho/07_04/georefT_07_04.tif")
 plot(thermal)
-rgbT <- brick("/Users/hkropp/Google Drive/research/Healy_ET/QGIS/Healyflight_7_04.tif")
+rgbT <- brick("/Users/hkropp/Google Drive/research/projects/Healy_ET/QGIS/Healyflight_7_04.tif")
 
 #read in shapefilse
 shrubs <- readOGR(paste0(inDir,"shrubs.shp"))
@@ -35,9 +35,11 @@ lichenR <- rasterize(lichensp,thermal, field = 1)
 shortShrubR <- rasterize(shortShrubsp,thermal, field = 1)
 plot(shrubsR)
 
+hist(getValues(thermal))
+quantile(getValues(thermal),seq(0,1,by=0.05))
 #all na got converted to zeros 
 thermalF <- setValues(thermal,
-                      ifelse(getValues(thermal) < 10 ,
+                      ifelse(getValues(thermal) < 10 | getValues(thermal) > 31 ,
                              NA,
                              getValues(thermal)))
 
@@ -60,7 +62,7 @@ tempRS <- data.frame(temp = c(
 ##### other data             #####
 ##################################
 #look at leaf temp
-leafT <- read.csv("/Users/hkropp/Google Drive/research/Healy_ET/alaska_2018/thermal_canopy/healy/leaf_temp/subset_out/leaf_temp_ir.csv")
+leafT <- read.csv("/Users/hkropp/Google Drive/research/projects/Healy_ET/alaska_2018/thermal_canopy/healy/leaf_temp/subset_out/leaf_temp_ir.csv")
 leafT$decDay <- leafT$doy + (leafT$start_time/24)
 
 #calculate averages of plant leaf temperatures
@@ -68,11 +70,11 @@ leafT$decDay <- leafT$doy + (leafT$start_time/24)
 leafA <- aggregate(leafT$average, by=list(leafT$species1,
                                           leafT$doy,
                                           leafT$start_time),
-                   FUN="mean")
+                   FUN="mean",na.rm=TRUE)
 leafSD <- aggregate(leafT$average, by=list(leafT$species1,
                                            leafT$doy,
                                            leafT$start_time),
-                    FUN="sd")
+                    FUN="sd",na.rm=TRUE)
 colnames(leafA) <- c("type", "doy","hour","averageT")
 
 leafA$decDay <- leafA$doy + (leafA$hour/24)
@@ -163,7 +165,7 @@ library(BAMMtools)
 
 getJenksBreaks(getValues(thermalFc), 9)
 range(getValues(thermalFc), na.rm=TRUE)
-breaks <- c(17,19, 20, 21,22,23,24, 25,26,28,31, 33,45)
+breaks <- c(17,19,20,21,22,23,24,25,26,27,29,31,33)
 cols <- c(
   rgb(0,0.34,0.50),
   rgb(0.02,0.47,0.51),

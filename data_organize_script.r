@@ -26,7 +26,7 @@ library(REddyProc)
 
 
 #home directory
-dirD <- "/Users/hkropp/Google Drive/research/Healy_ET/healy_flux"
+dirD <- "/Users/hkropp/Google Drive/research/projects/Healy_ET/healy_flux"
 
 fluxFile <-list.files(paste0(dirD, "/fluxes/data"), full.names=TRUE)
 
